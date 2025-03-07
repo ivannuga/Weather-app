@@ -1,0 +1,70 @@
+<div class="container">
+  <h1>Weather App</h1>
+
+  <input
+    [value]="cityControl()"
+    (input)="updateCity($event)"
+    (keyup)="searchCities(cityControl())"
+    placeholder="Enter city name"
+  />
+
+  <button (click)="getWeatherForCities()">Get Weather</button>
+
+  <div *ngIf="weatherResults.length > 0">
+    <h2>Weather Results</h2>
+    <div *ngFor="let weatherData of weatherResults" class="weather-card">
+      <h3>
+        Weather in {{ weatherData.name }}, {{ weatherData.sys.country }}
+
+        <span class="favorite-star" (click)="toggleFavorite(weatherData)">
+          {{ isFavorite(weatherData) ? "⭐" : "☆" }}
+        </span>
+      </h3>
+      <p>Temperature: {{ weatherData.main.temp }}°C</p>
+      <p>
+        Min: {{ weatherData.main.temp_min }}°C | Max:
+        {{ weatherData.main.temp_max }}°C
+      </p>
+      <p>Humidity: {{ weatherData.main.humidity }}%</p>
+      <p>Condition: {{ weatherData.weather[0].description }}</p>
+      <img
+        [src]="
+          'https://openweathermap.org/img/wn/' +
+          weatherData.weather[0].icon +
+          '@2x.png'
+        "
+        alt="Weather Icon"
+      />
+    </div>
+  </div>
+
+  <p *ngIf="weatherResults.length === 0">No weather data available.</p>
+
+  <div *ngIf="favoriteCities().length > 0">
+    <h2>Favorite Cities</h2>
+    <div *ngFor="let favorite of favoriteCities()" class="weather-card">
+      <h3>{{ favorite.name }}</h3>
+
+      <p>Temperature: {{ favorite.main.temp }}°C</p>
+      <p>
+        Min: {{ favorite.main.temp_min }}°C | Max:
+        {{ favorite.main.temp_max }}°C
+      </p>
+      <p>Humidity: {{ favorite.main.humidity }}%</p>
+      <p *ngIf="favorite.weather?.weather?.length">
+        Condition: {{ favorite.weather[0].description }}
+      </p>
+      <img
+        *ngIf="favorite.weather"
+        [src]="
+          'https://openweathermap.org/img/wn/' +
+          favorite.weather.weather[0].icon +
+          '@2x.png'
+        "
+        alt="Weather Icon"
+      />
+
+      <button (click)="removeFromFavorites(favorite)">Remove</button>
+    </div>
+  </div>
+</div>
