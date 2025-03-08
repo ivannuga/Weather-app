@@ -42,7 +42,11 @@
 
   <div *ngIf="favoriteCities().length > 0">
     <h2>Favorite Cities</h2>
-    <div *ngFor="let favorite of favoriteCities()" class="weather-card">
+    <div
+      *ngFor="let favorite of favoriteCities()"
+      class="weather-card"
+      (click)="selectCity(favorite)"
+    >
       <h3>{{ favorite.name }}</h3>
 
       <p>Temperature: {{ favorite.main.temp }}°C</p>
@@ -64,7 +68,36 @@
         alt="Weather Icon"
       />
 
-      <button (click)="removeFromFavorites(favorite)">Remove</button>
+      <button (click)="removeFromFavorites(favorite); $event.stopPropagation()">
+        Remove
+      </button>
+
+      <div
+        *ngIf="favorite.isSelected && favorite.hourlyForecast?.length"
+        class="hourly-forecast"
+      >
+        <h4>Hourly Forecast Next 24 Hours</h4>
+        <div class="hourly-list">
+          <div
+            *ngFor="let hour of favorite.hourlyForecast || []"
+            class="hourly-item"
+          >
+            <p>{{ hour.time }}</p>
+            <p>{{ hour.temp }}°C</p>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="favorite.weeklyForecast?.length" class="weekly-forecast">
+        <h4>Weekly Forecast</h4>
+        <div class="weekly-list">
+          <div *ngFor="let day of favorite.weeklyForecast" class="weekly-item">
+            <p>{{ day.date }}</p>
+            <p>Min: {{ day.tempMin }}°C</p>
+            <p>Max: {{ day.tempMax }}°C</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
